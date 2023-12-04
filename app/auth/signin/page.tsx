@@ -9,12 +9,6 @@ import { hash } from '../../../utils/hash'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: "Signin Page | Next.js E-commerce Dashboard Template",
-  description: "This is Signin page for TailAdmin Next.js",
-  // other metadata
-};
-
 async function signInUser(username: string, password: string) {
   const hashedPassword = await hash(password);
   
