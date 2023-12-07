@@ -4,18 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
-import { queryDB } from '../../../utils/db';
 import { hash } from '../../../utils/hash'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 async function signInUser(username: string, password: string) {
   const hashedPassword = await hash(password);
-  
   try {
     // Query to get data
-    const data = queryDB('SELECT * FROM users WHERE username = ' + username + 'password = ' + password);
-    console.log(data);
   } catch (error) {
     console.log(error);
   }
