@@ -1,21 +1,21 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Pagination from "@/components/Paginations";
-import TableSupplier from "@/components/Tables/TableSupplier";
-import { Supplier } from "@/types/supplier";
+import TableCustomer from "@/components/Tables/TableCustomer";
+import { Customer } from "@/types/customer";
 import { Metadata } from "next";
 import {useRouter} from "next/navigation";
 import { off } from "process";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 export const metadata: Metadata = {
-  title: "Tables Page | Next.js E-commerce Dashboard Template",
-  description: "This is Tables page for TailAdmin Next.js",
+  title: "KingKong Motor",
+  description: "KingKong Motor",
   // other metadata
 };
 
 const TablesPage = () => {
-  const [data, setData] = useState<Supplier[] | null>(null);
+  const [data, setData] = useState<Customer[] | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [totalData, setTotalData] = useState(0);
   const [offset, setOffset] = useState<number>(0);
@@ -23,19 +23,18 @@ const TablesPage = () => {
   const route = useRouter();
 
   const refreshTable = async (newOffset: number, newLimit: number) => {
-    fetch(`http://localhost:7000/api/v1/supplier?limit=${newLimit}&offset=${newOffset}`)
+    fetch(`http://localhost:7000/api/v1/customer?limit=${newLimit}&offset=${newOffset}`)
       .then((res) => res.json())
       .then((responseData) => {
         if (responseData && responseData.data) {
-          const suppliers: Supplier[] = responseData.data.map((item: any) => ({
-            supplier_id: item.supplier_id,
-            supplier_name: item.supplier_name,
+          const customers: Customer[] = responseData.data.map((item: any) => ({
+            customer_id: item.customer_id,
+            customer_name: item.customer_name,
             phone_number: item.phone_number,
             email: item.email,
-            contact_person: item.contact_person,
           }));
           setTotalData(responseData.meta.total);
-          setData(suppliers);
+          setData(customers);
         }
         setLoading(false);
       })
@@ -52,7 +51,7 @@ const TablesPage = () => {
   const handleDelete = async (key: number) => {
     try {
       console.log(key);
-      const response = await fetch(`http://localhost:7000/api/v1/supplier/${key}` , {
+      const response = await fetch(`http://localhost:7000/api/v1/customer/${key}` , {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +59,7 @@ const TablesPage = () => {
       });
 
       if (response.ok) {
-        toast.success('Supplier deleted successfully!', {});
+        toast.success('Customer deleted successfully!', {});
         refreshTable(offset, limit);
       } else {
         const errorResponse = await response.json();
@@ -90,17 +89,17 @@ const TablesPage = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Supplier" />
+      <Breadcrumb pageName="Customer" />
       <div className="flex flex-col gap-10">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold"></h1>
           <button
             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-            type="submit" onClick={() => {route.push('/supplier/create')}}>
+            type="submit" onClick={() => {route.push('/customer/create')}}>
             Create New
           </button>
         </div>
-        <TableSupplier data={data} handleDelete={handleDelete} />
+        <TableCustomer data={data} handleDelete={handleDelete} />
       </div>
       <div className="flex flex-col gap-10">
       

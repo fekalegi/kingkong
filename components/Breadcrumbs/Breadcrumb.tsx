@@ -3,7 +3,6 @@ interface BreadcrumbProps {
   pageName: string;
 }
 const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
-  console.log(pageName);
   const hideNav = pageName.includes('Sign');
 
   if (hideNav) {

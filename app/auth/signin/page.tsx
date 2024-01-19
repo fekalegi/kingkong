@@ -1,23 +1,11 @@
 "use client";
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 import { hash } from '../../../utils/hash'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
-async function signInUser(username: string, password: string) {
-  const hashedPassword = await hash(password);
-  try {
-    // Query to get data
-  } catch (error) {
-    console.log(error);
-  }
-  // Call your login API endpoint with the hashed password
-  // ...
-}
 
 const SignIn: React.FC = () => {
   const router = useRouter();
@@ -27,6 +15,37 @@ const SignIn: React.FC = () => {
     e.preventDefault();
     await signInUser(username, password);
   };
+
+  
+async function signInUser(username: string, password: string) {
+  try {
+    const response = await fetch('http://localhost:7000/api/v1/auth/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      localStorage.setItem('token', data.data.access_token);
+      toast.success("logged in");
+      router.push('/purchase/');
+    } else {
+      const errorResponse = await response.json();
+      const errorMessage = errorResponse.message || 'Unknown error occurred';
+      // Handle error response
+      toast.error(`Error response: ${errorMessage}`);
+    }
+  } catch (error) {
+    toast.error('Error submitting :'+ error)
+  }
+}
 
   return (
     <>

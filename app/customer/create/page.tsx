@@ -4,21 +4,20 @@ import { Metadata } from "next";
 import { useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { Supplier } from "@/types/supplier";
+import { Customer } from "@/types/customer";
 
 export const metadata: Metadata = {
-  title: "Form Layout Page | Next.js E-commerce Dashboard Template",
-  description: "This is Form Layout page for TailAdmin Next.js",
+  title: "KingKong Motor",
+  description: "KingKong Motor",
   // other metadata
 };
 
 const FormLayout = () => {
-  const [formData, setFormData] = useState<Supplier>({
-    supplier_id: 0,
-    supplier_name: '',
+  const [formData, setFormData] = useState<Customer>({
+    customer_id: 0,
+    customer_name: '',
     phone_number: '',
     email: '',
-    contact_person: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,12 +30,12 @@ const FormLayout = () => {
   
   const router = useRouter();
   
-  const notify = () => toast.success('Supplier added successfully!', {});
+  const notify = () => toast.success('Customer added successfully!', {});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:7000/api/v1/supplier', {
+      const response = await fetch('http://localhost:7000/api/v1/customer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +45,7 @@ const FormLayout = () => {
 
       if (response.ok) {
         notify();
-        router.push('/supplier/')
+        router.push('/customer/')
       } else {
         const errorResponse = await response.json();
         const errorMessage = errorResponse.message || 'Unknown error occurred';
@@ -61,27 +60,27 @@ const FormLayout = () => {
 
   return (
     <>
-    <Breadcrumb pageName="New Supplier" />
+    <Breadcrumb pageName="New Customer" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
-          {/* Supplier Form */}
+          {/* Customer Form */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Supplier Form
+                Customer Form
               </h3>
             </div>
             <form action="#" onSubmit={handleSubmit}>
               <div className="p-6.5">
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Supplier Name
+                    Customer Name
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter supplier's name"
-                    name="supplier_name"
-                    value={formData.supplier_name}
+                    placeholder="Enter customer's name"
+                    name="customer_name"
+                    value={formData.customer_name}
                     onChange={handleInputChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
@@ -96,20 +95,6 @@ const FormLayout = () => {
                     placeholder="Enter email address"
                     name="email"
                     value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-                
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Contact Person
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Contact Person"
-                    name="contact_person"
-                    value={formData.contact_person}
                     onChange={handleInputChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />

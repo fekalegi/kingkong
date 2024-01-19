@@ -1,11 +1,10 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Pagination from "@/components/Paginations";
-import TableSupplier from "@/components/Tables/TableSupplier";
-import { Supplier } from "@/types/supplier";
+import TableSales from "@/components/Tables/TableSales";
+import { Transaction } from "@/types/transaction";
 import { Metadata } from "next";
 import {useRouter} from "next/navigation";
-import { off } from "process";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 export const metadata: Metadata = {
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 const TablesPage = () => {
-  const [data, setData] = useState<Supplier[] | null>(null);
+  const [data, setData] = useState<Transaction[] | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [totalData, setTotalData] = useState(0);
   const [offset, setOffset] = useState<number>(0);
@@ -23,19 +22,20 @@ const TablesPage = () => {
   const route = useRouter();
 
   const refreshTable = async (newOffset: number, newLimit: number) => {
-    fetch(`http://localhost:7000/api/v1/supplier?limit=${newLimit}&offset=${newOffset}`)
+    fetch(`http://localhost:7000/api/v1/transaction?limit=${newLimit}&offset=${newOffset}&type=Sales`)
       .then((res) => res.json())
       .then((responseData) => {
         if (responseData && responseData.data) {
-          const suppliers: Supplier[] = responseData.data.map((item: any) => ({
-            supplier_id: item.supplier_id,
-            supplier_name: item.supplier_name,
-            phone_number: item.phone_number,
-            email: item.email,
-            contact_person: item.contact_person,
+          const transactions: Transaction[] = responseData.data.map((item: any) => ({
+            transaction_id: item.transaction_id,
+            transaction_date: item.transaction_date,
+            total_price: item.total_price,
+            customer_name: item.customer_name,
+            additional_information: item.additional_information,
+            username: item.username
           }));
           setTotalData(responseData.meta.total);
-          setData(suppliers);
+          setData(transactions);
         }
         setLoading(false);
       })
@@ -51,8 +51,7 @@ const TablesPage = () => {
   
   const handleDelete = async (key: number) => {
     try {
-      console.log(key);
-      const response = await fetch(`http://localhost:7000/api/v1/supplier/${key}` , {
+      const response = await fetch(`http://localhost:7000/api/v1/transaction/${key}` , {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +59,7 @@ const TablesPage = () => {
       });
 
       if (response.ok) {
-        toast.success('Supplier deleted successfully!', {});
+        toast.success('Part deleted successfully!', {});
         refreshTable(offset, limit);
       } else {
         const errorResponse = await response.json();
@@ -86,21 +85,20 @@ const TablesPage = () => {
   };
 
   if (isLoading) return <p>Loading...</p>
-  if (!data) return <p>No profile data</p>
 
   return (
     <>
-      <Breadcrumb pageName="Supplier" />
+      <Breadcrumb pageName="Part" />
       <div className="flex flex-col gap-10">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold"></h1>
           <button
             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-            type="submit" onClick={() => {route.push('/supplier/create')}}>
+            type="submit" onClick={() => {route.push('/sales/create')}}>
             Create New
           </button>
         </div>
-        <TableSupplier data={data} handleDelete={handleDelete} />
+        <TableSales data={data} handleDelete={handleDelete} />
       </div>
       <div className="flex flex-col gap-10">
       

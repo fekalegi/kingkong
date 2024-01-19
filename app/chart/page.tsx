@@ -5,8 +5,8 @@ import ChartThree from "@/components/Charts/ChartThree";
 import ChartTwo from "@/components/Charts/ChartTwo";
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Chart Page | Next.js E-commerce Dashboard Template",
-  description: "This is Chart Page for TailAdmin Next.js",
+  title: "KingKong Motor",
+  description: "KingKong Motor",
   // other metadata
 };
 

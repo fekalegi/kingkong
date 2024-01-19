@@ -1,12 +1,12 @@
-import { Supplier } from "@/types/supplier";
+import { Part } from "@/types/part";
 import { useRouter } from "next/navigation";
 
-interface TableSupplierProps {
-  data: Supplier[];
+interface TablePartProps {
+  data: Part[];
   handleDelete: (key: number) => Promise<void>;
 }
 
-const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => {
+const TablePart: React.FC<TablePartProps> = ({ data, handleDelete }) => {
   if (!data) {
     return <p>No data available</p>;
   }
@@ -31,16 +31,16 @@ const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => 
                 No
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                Part Name
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Supplier Name
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Phone Number
+                Price
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Email
-              </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Contact Person
+                Stock
               </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -51,8 +51,13 @@ const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => 
             {data.map((packageItem, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
+                 <p className="font-medium text-black dark:text-white">
                     {key + 1}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.part_name}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -62,22 +67,17 @@ const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => 
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.phone_number}
+                    {packageItem.price}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.email}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.contact_person}
+                    {packageItem.stock_quantity}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button className="hover:text-primary" onClick={() => {router.push(`/supplier/edit?id=${packageItem.supplier_id}`)}}>
+                    <button className="hover:text-primary" onClick={() => {router.push(`/part/edit?id=${packageItem.part_id}`)}}>
                       <svg
                         className="fill-current"
                         width="18"
@@ -96,7 +96,7 @@ const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => 
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary" onClick={() => handleDeleteClick(packageItem.supplier_id)}>
+                    <button className="hover:text-primary" onClick={() => handleDeleteClick(packageItem.part_id)}>
                       <svg
                         className="fill-current"
                         width="18"
@@ -134,4 +134,4 @@ const TableSupplier: React.FC<TableSupplierProps> = ({ data, handleDelete }) => 
   );
 };
 
-export default TableSupplier;
+export default TablePart;

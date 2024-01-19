@@ -4,7 +4,8 @@ import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter,useSearchParams } from 'next/navigation';
-import { Customer } from "@/types/customer";
+import { Part } from "@/types/part";
+import Select from 'react-select';
 
 export const metadata: Metadata = {
   title: "KingKong Motor",
@@ -13,32 +14,25 @@ export const metadata: Metadata = {
 };
 const FormLayout = () => {
 
-  const [formData, setFormData] = useState<Customer>({
-    customer_id: 0,
-    customer_name: '',
-    phone_number: '',
-    email: '',
+  const [formData, setFormData] = useState<Part>({
+    part_id: 0,
+    part_name: '',
+    supplier_id: 0,
+    supplier_name:'',
+    price: 0,
+    stock_quantity: 0,
   });
-  
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id');
-  const [isLoading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`http://localhost:7000/api/v1/customer/${id}`)
-      .then((res) => res.json())
-      .then((responseData) => {
-        if (responseData && responseData.data) {
-          const customers: Customer = responseData.data;
-          setFormData(customers);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      });
-  }, []);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    setFormData({
+      ...formData,
+      supplier_id: selectedOption.value
+    });
+    // Perform other actions or state updates based on the selected option here
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,15 +41,24 @@ const FormLayout = () => {
       [name]: value,
     });
   };
+
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const parsedValue = parseInt(value, 10);
+    setFormData({
+      ...formData,
+      [name]: parsedValue,
+    });
+  };
   
   const router = useRouter();
   
-  const notify = () => toast.success('Customer added successfully!', {});
+  const notify = () => toast.success('Part added successfully!', {});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:7000/api/v1/customer/${formData.customer_id}`, {
+      const response = await fetch(`http://localhost:7000/api/v1/part/${formData.part_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +68,7 @@ const FormLayout = () => {
 
       if (response.ok) {
         notify();
-        router.push('/customer/')
+        router.push('/part/')
       } else {
         const errorResponse = await response.json();
         const errorMessage = errorResponse.message || 'Unknown error occurred';
@@ -77,31 +80,53 @@ const FormLayout = () => {
       toast.error('Error submitting :'+ error)
     }
   };
+
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  useEffect(() => {
+    fetch(`http://localhost:7000/api/v1/part/${id}`)
+      .then((res) => res.json())
+      .then((responseData) => {
+        if (responseData && responseData.data) {
+          const parts: Part = responseData.data;
+          setFormData(parts);
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   if (isLoading) return <p>Loading...</p>
 
   return (
     <>
-    <Breadcrumb pageName="New Customer" />
+    <Breadcrumb pageName="New Part" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
-          {/* Customer Form */}
+          {/* Part Form */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Customer Form
+                Part Form
               </h3>
             </div>
             <form action="#" onSubmit={handleSubmit}>
               <div className="p-6.5">
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Customer Name
+                    Part Name
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter customer's name"
-                    name="customer_name"
-                    value={formData.customer_name}
+                    placeholder="Enter part's name"
+                    name="part_name"
+                    value={formData.part_name}
                     onChange={handleInputChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
@@ -109,28 +134,44 @@ const FormLayout = () => {
 
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Email
+                    Supplier
                   </label>
-                  <input
-                    type="email"
-                    placeholder="Enter email address"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    isLoading={isLoading}
+                    isClearable={true}
+                    isSearchable={true}
+                    name="supplier"
+                    options={options}
+                    onChange={handleChange}
                   />
                 </div>
                                 
                 <div className="mb-4.5">
                   <label className="mb-2.5 block text-black dark:text-white">
-                    Phone Number
+                    Price
                   </label>
                   <input
-                    type="text"
-                    placeholder="Enter Phone Number"
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleInputChange}
+                    type="number"
+                    placeholder="Enter Price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleNumberChange}
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                </div>
+
+                <div className="mb-4.5">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Stock Quantity
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Enter Stock"
+                    name="stock_quantity"
+                    value={formData.stock_quantity}
+                    onChange={handleNumberChange}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                 </div>

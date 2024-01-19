@@ -7,8 +7,8 @@ import { useRouter,useSearchParams } from 'next/navigation';
 import { Supplier } from "@/types/supplier";
 
 export const metadata: Metadata = {
-  title: "Form Layout Page | Next.js E-commerce Dashboard Template",
-  description: "This is Form Layout page for TailAdmin Next.js",
+  title: "KingKong Motor",
+  description: "KingKong Motor",
   // other metadata
 };
 const FormLayout = () => {
