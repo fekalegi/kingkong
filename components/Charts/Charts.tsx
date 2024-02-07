@@ -2,6 +2,7 @@
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import { Chart } from "@/types/chart";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -13,19 +14,47 @@ interface ChartOneState {
   }[];
 }
 
-const ChartOne: React.FC = () => {
+interface ChartsProps {
+  jsonData: Chart;
+}
+
+const Charts: React.FC = ({jsonData}) => {
+  if (!jsonData) {
+    return <p>No data available</p>;
+  }
   const [selectedInterval, setSelectedInterval] = useState<string>("day");
+
+  let dataSales: number[] = [];
+  let dataPurchase: number[] = [];
+  let categoryDays: string[] = [];
+  let categoryMonth: string[] = [];
+  let maxNumber: number;
+  if (selectedInterval === "day") {
+    dataSales = jsonData.weekly_chart_sales.map((item) => item.sum);
+    dataPurchase = jsonData.weekly_chart_purchase.map((item) => item.sum);
+    categoryDays = jsonData.weekly_chart_sales.map((item)=> item.day);
+  } else if (selectedInterval === "month") {
+    dataSales = jsonData.monthly_chart_sales.map((item) => item.sum);
+    dataPurchase = jsonData.monthly_chart_sales.map((item) => item.sum);
+    categoryMonth = jsonData.weekly_chart_sales.map((item)=> item.month_str);
+  }
+
+  dataSales.forEach((currentNumber) => {
+    if (maxNumber < currentNumber) {
+      maxNumber = currentNumber;
+    }
+  });
+
+  dataPurchase.forEach((currentNumber) => {
+    if (maxNumber < currentNumber) {
+      maxNumber = currentNumber;
+    }
+  });
 
   const [state, setState] = useState<ChartOneState>({
     series: [
-      {
-        name: "Product One",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
-      {
-        name: "Product Two",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
+      {name: "Sales", data: dataSales},
+      {name: "Purchase", data: dataPurchase}
     ],
   });
 
@@ -37,29 +66,26 @@ const ChartOne: React.FC = () => {
 
   const handleIntervalChange = (interval: string) => {
     setSelectedInterval(interval);
+    if (interval === "day") {
+      dataSales = jsonData.weekly_chart_sales.map((item) => item.sum);
+      dataPurchase = jsonData.weekly_chart_purchase.map((item) => item.sum);
+      categoryDays = jsonData.weekly_chart_sales.map((item)=> item.day);
+    } else if (interval === "month") {
+      dataSales = jsonData.monthly_chart_sales.map((item) => item.sum);
+      dataPurchase = jsonData.monthly_chart_sales.map((item) => item.sum);
+      categoryMonth = jsonData.weekly_chart_sales.map((item)=> item.month_str);
+    }
+    
     // You can add additional logic here if needed
   };
 
   const getDayLabels = () => {
-    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const daysOfWeek = categoryDays;
     return daysOfWeek;
   };
 
   const getMonthLabels = () => {
-    const months = [
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-    ];
+    const months = categoryMonth;
     return months
   }
 
@@ -176,12 +202,14 @@ const ChartOne: React.FC = () => {
         },
       },
       min: 0,
-      max: 100,
+      max: maxNumber,
     },
   };
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
+      <h1>Weekly Chart</h1>
+    <br></br>
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-47.5">
@@ -189,8 +217,7 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Total Sales</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -198,12 +225,11 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Total Purchase</p>
             </div>
           </div>
         </div>
-        <div className="flex w-full max-w-45 justify-end">
+        {/* <div className="flex w-full max-w-45 justify-end">
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
             <button
               className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
@@ -218,7 +244,7 @@ const ChartOne: React.FC = () => {
               Month
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div>
@@ -227,7 +253,7 @@ const ChartOne: React.FC = () => {
             options={options}
             series={state.series}
             type="area"
-            width="100%"
+            width="95%"
             height="100%"
           />
         </div>
@@ -236,4 +262,4 @@ const ChartOne: React.FC = () => {
   );
 };
 
-export default ChartOne;
+export default Charts;
