@@ -82,7 +82,7 @@ const TablesPage = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Part" />
+      <Breadcrumb pageName="Sales" />
       <div className="flex flex-col gap-10">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold"></h1>
