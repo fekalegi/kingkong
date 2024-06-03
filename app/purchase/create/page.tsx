@@ -1,6 +1,5 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
@@ -8,11 +7,6 @@ import Select from 'react-select';
 import { Transaction, TransactionPart, TransactionPurchase } from "@/types/transaction";
 import TableTransactionPart from "@/components/Tables/TableTransactionPart";
 
-export const metadata: Metadata = {
-  title: "KingKong Motor",
-  description: "KingKong Motor",
-  // other metadata
-};
 
 const FormLayout = () => {
   

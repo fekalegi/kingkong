@@ -1,18 +1,10 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { Part } from "@/types/part";
 import Select from 'react-select';
-import { Supplier } from "@/types/supplier";
-
-export const metadata: Metadata = {
-  title: "KingKong Motor",
-  description: "KingKong Motor",
-  // other metadata
-};
 
 const FormLayout = () => {
   const [formData, setFormData] = useState<Part>({

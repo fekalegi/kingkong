@@ -1,17 +1,12 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter,useSearchParams } from 'next/navigation';
 import { Transaction, TransactionPart } from "@/types/transaction";
 import TableTransactionPartDisabled from "@/components/Tables/TableTransactionPartDisabled";
 
-export const metadata: Metadata = {
-  title: "KingKong Motor",
-  description: "KingKong Motor",
-  // other metadata
-};
+
 const FormLayout = () => {
 
   const [transactionParts, setTransactionParts] = useState<TransactionPart[]>([]);

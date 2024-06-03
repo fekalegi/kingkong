@@ -3,15 +3,9 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Pagination from "@/components/Paginations";
 import TableSales from "@/components/Tables/TableSales";
 import { Transaction } from "@/types/transaction";
-import { Metadata } from "next";
 import {useRouter} from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-export const metadata: Metadata = {
-  title: "KingKong Motor",
-  description: "KingKong Motor",
-  // other metadata
-};
 
 const TablesPage = () => {
   const [data, setData] = useState<Transaction[] | null>(null);
